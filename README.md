@@ -1,0 +1,1 @@
+# com.realitytoolkit.spatial-persistence.niantic
