@@ -1,0 +1,30 @@
+{
+    "name": "RealityToolkit.SpatialPersistence.Niantic",
+    "rootNamespace": "RealityToolkit.SpatialPersistence.Niantic",
+    "references": [
+        "GUID:13703f41b24bb904cb2305abe6317e3d",
+        "GUID:b2d046948d6452a4b8485efc9ce0f88c",
+        "GUID:c148ca4f0506aba4bb7c9e15a44bf2e3",
+        "GUID:a9420e37d7990b54abdef6688edbe313",
+        "GUID:92703082f92b41ba80f0d6912de66115",
+        "GUID:dc960734dc080426fa6612f1c5fe95f3",
+        "GUID:ebf051e8066a449148e51cebff289cdd"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "NIANTIC_NSDK_4"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.nianticspatial.nsdk",
+            "expression": "4.0.0",
+            "define": "NIANTIC_NSDK_4"
+        }
+    ],
+    "noEngineReferences": false
+}

@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da64fb88269149f8a95f1fb969d6a0b4, type: 3}
+  m_Name: SpatialPersistence_NianticPackageInstallerProfile
+  m_EditorClassIdentifier: 
+  platformEntries:
+    runtimePlatforms:
+    - reference: e0d70d45-a52a-4b03-bcdf-8fe367555516
+    - reference: 99428b70-e46a-4a1a-82b3-4e29bac872bd
+  configurations:
+  - instancedType:
+      reference: 64f41a9f-5c8e-4a52-b61b-553f485be959
+    name: Niantic Spatial Persistence Service Device Mapping Module
+    priority: 0
+    profile: {fileID: 11400000, guid: d38e842d4cc8474fa8aee97f3aa0ebc7, type: 2}
+    platformEntries:
+      runtimePlatforms:
+      - reference: e0d70d45-a52a-4b03-bcdf-8fe367555516
+      - reference: 99428b70-e46a-4a1a-82b3-4e29bac872bd

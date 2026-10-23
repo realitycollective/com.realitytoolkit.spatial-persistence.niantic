@@ -1,0 +1,3 @@
+<linker>
+  <assembly fullname="RealityToolkit.SpatialPersistence.Niantic" preserve="all"/>
+</linker>

@@ -1,0 +1,32 @@
+{
+    "name": "RealityToolkit.SpatialPersistence.Niantic.Editor.Tests",
+    "rootNamespace": "RealityToolkit.SpatialPersistence.Niantic.Editor.Tests",
+    "references": [
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner",
+        "RealityToolkit.SpatialPersistence",
+        "RealityToolkit.SpatialPersistence.Niantic"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS",
+        "NIANTIC_NSDK_4"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.nianticspatial.nsdk",
+            "expression": "4.0.0",
+            "define": "NIANTIC_NSDK_4"
+        }
+    ],
+    "noEngineReferences": false
+}

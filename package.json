@@ -1,0 +1,46 @@
+{
+  "name": "com.realitytoolkit.spatial-persistence.niantic",
+  "displayName": "RealityToolkit.SpatialPersistence.Niantic",
+  "description": "The Spatial Persistence Niantic device mapping module for the Reality Toolkit by the Reality Collective. Scans a space into a map stored on the device and relocalises against it, using the Niantic Spatial SDK (NSDK 4) device mapping. No Niantic cloud service is used. Requires com.nianticspatial.nsdk 4.0 or later, added from its git URL.",
+  "version": "1.0.0-pre.1",
+  "documentationUrl": "https://realitytoolkit.realitycollective.net/",
+  "changelogUrl": "https://github.com/realitycollective/com.realitytoolkit.spatial-persistence.niantic/releases",
+  "licensesUrl": "https://github.com/realitycollective/com.realitytoolkit.spatial-persistence.niantic/blob/main/LICENSE.md",
+  "keywords": [
+    "VR",
+    "AR",
+    "XR",
+    "Mixed Reality",
+    "Niantic",
+    "VPS",
+    "Device Mapping"
+  ],
+  "unity": "6000.0",
+  "homepage": "https://realitytoolkit.realitycollective.net/",
+  "bugs": {
+    "url": "https://github.com/realitycollective/com.realitytoolkit.spatial-persistence.niantic/issues"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/realitycollective/com.realitytoolkit.spatial-persistence.niantic"
+  },
+  "author": {
+    "name": "Reality Collective",
+    "email": "realitycollectivedev@gmail.com",
+    "url": "https://github.com/realitycollective"
+  },
+  "publishConfig": {
+    "registry": "https://package.openupm.com"
+  },
+  "dependencies": {
+    "com.unity.xr.arfoundation": "6.4.2",
+    "com.realitytoolkit.spatial-persistence": "1.1.0-pre.1"
+  },
+  "assets": [
+    {
+      "displayName": "Default Assets",
+      "path": "Assets~/"
+    }
+  ]
+}
