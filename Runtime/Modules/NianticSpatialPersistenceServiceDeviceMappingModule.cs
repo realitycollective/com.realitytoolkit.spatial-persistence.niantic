@@ -76,6 +76,7 @@ namespace RealityToolkit.SpatialPersistence.Niantic
         private float trackingStartedAt;
         private float scanStartedAt;
         private float nextScanSampleAt;
+        private bool finishWhenCovered = true;
         #endregion Private Properties
 
         #region Constructor
@@ -168,6 +169,7 @@ namespace RealityToolkit.SpatialPersistence.Niantic
             if (!niantic.IsMapping && currentMapId == null)
             {
                 // Nothing to place the anchor against yet: scan the space into a new map, as a cloud service captures the space first.
+                finishWhenCovered = true;
                 StartScan();
             }
 
@@ -356,6 +358,78 @@ namespace RealityToolkit.SpatialPersistence.Niantic
             LoadIndexes();
             return mapOfAnchor.Keys.ToArray();
         }
+
+        /// <inheritdoc />
+        public string CurrentMapId => currentMapId;
+
+        /// <inheritdoc />
+        public event Action<string> MapStoreFailed;
+
+        /// <inheritdoc />
+        public bool BeginScan(bool finishWhenCovered)
+        {
+            if (!EnsureStarted() || niantic.IsMapping)
+            {
+                return false;
+            }
+
+            this.finishWhenCovered = finishWhenCovered;
+            StartScan();
+            return true;
+        }
+
+        /// <inheritdoc />
+        public Task<bool> LoadMapAsync(string mapId)
+        {
+            LoadIndexes();
+            if (string.IsNullOrEmpty(mapId) || !File.Exists(MapPath(mapId)))
+            {
+                return Task.FromResult(false);
+            }
+
+            if (!indexes.ContainsKey(mapId))
+            {
+                indexes[mapId] = new DeviceMapAnchorIndex { mapId = mapId };
+            }
+
+            var result = new TaskCompletionSource<bool>();
+            Find(mapId, new List<string>(), result);
+            return result.Task;
+        }
+
+        /// <inheritdoc />
+        public string[] GetStoredMapIds()
+        {
+            LoadIndexes();
+            return indexes.Keys.Where(mapId => File.Exists(MapPath(mapId))).ToArray();
+        }
+
+        /// <inheritdoc />
+        public bool DeleteStoredMap(string mapId)
+        {
+            LoadIndexes();
+            if (string.IsNullOrEmpty(mapId) || (!indexes.ContainsKey(mapId) && !File.Exists(MapPath(mapId))))
+            {
+                return false;
+            }
+
+            var anchorIds = indexes.TryGetValue(mapId, out var index) ? index.anchors.Select(anchor => anchor.id).ToArray() : Array.Empty<string>();
+            foreach (var id in anchorIds)
+            {
+                DestroyAnchorObject(id);
+            }
+
+            DeleteMap(mapId);
+            foreach (var id in anchorIds)
+            {
+                OnAnchorDeleted(id);
+            }
+
+            return true;
+        }
+
+        /// <inheritdoc />
+        public string GetMapPath(string mapId) => MapPath(mapId);
         #endregion INianticSpatialPersistenceServiceDeviceMappingModule
 
         #region BaseService
@@ -381,7 +455,7 @@ namespace RealityToolkit.SpatialPersistence.Niantic
                     nextScanSampleAt = Time.realtimeSinceStartup + 1f;
                     coverage.SetMeshArea(MeasureMeshArea());
                     OnSpatialPersistenceStatusMessage(coverage.Summary(Time.realtimeSinceStartup));
-                    if (coverage.IsComplete(Time.realtimeSinceStartup))
+                    if (finishWhenCovered && coverage.IsComplete(Time.realtimeSinceStartup))
                     {
                         niantic.StopMapping();
                     }
@@ -514,7 +588,7 @@ namespace RealityToolkit.SpatialPersistence.Niantic
             // MapFinalized carries only the last update; the whole map comes from TryGetMapData.
             if (!niantic.TryGetMapData(out var mapData))
             {
-                FailPending("No map was created. Scan for longer and try again.");
+                FailScan("No map was created. Scan for longer and try again.");
                 return;
             }
 
@@ -525,24 +599,26 @@ namespace RealityToolkit.SpatialPersistence.Niantic
             }
             catch (Exception e)
             {
-                FailPending($"Could not store the map: {e.Message}");
+                FailScan($"Could not store the map: {e.Message}");
                 return;
             }
 
             indexes[mapId] = new DeviceMapAnchorIndex { mapId = mapId };
+            // Written now, so a map scanned without an anchor is listed after a restart.
+            SaveIndex(mapId);
             // The scan's root anchor exists from its first map update; mapping can stop.
             var anchorPayload = niantic.RootAnchorPayload;
             mappingManager.enabled = false;
             if (string.IsNullOrEmpty(anchorPayload) && !niantic.TryCreateRootAnchor(out anchorPayload))
             {
-                FailPending("The map was stored, but it has no root anchor to place anchors against.");
+                FailScan("The map was stored, but it has no root anchor to place anchors against.");
                 DeleteMap(mapId);
                 return;
             }
 
             if (!TrackRootAnchor(mapId, anchorPayload))
             {
-                FailPending("NSDK could not track the new map's root anchor.");
+                FailScan("NSDK could not track the new map's root anchor.");
                 DeleteMap(mapId);
                 return;
             }
@@ -812,6 +888,15 @@ namespace RealityToolkit.SpatialPersistence.Niantic
             var anchor = GetOrCreateAnchorObject(id);
             OnCreateAnchorSucceeded(id, anchor);
             pending.Result.TrySetResult(id);
+        }
+
+        /// <summary>
+        /// A finished scan could not become a map: tells those waiting for a create, and those that drove the scan themselves.
+        /// </summary>
+        private void FailScan(string reason)
+        {
+            MapStoreFailed?.Invoke(reason);
+            FailPending(reason);
         }
 
         private void FailPending(string reason)

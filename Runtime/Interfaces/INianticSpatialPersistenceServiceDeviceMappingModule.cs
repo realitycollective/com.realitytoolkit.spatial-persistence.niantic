@@ -4,6 +4,7 @@
 using RealityToolkit.SpatialPersistence.Interfaces;
 using RealityToolkit.SpatialPersistence.Niantic.Definitions;
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace RealityToolkit.SpatialPersistence.Niantic
@@ -59,5 +60,45 @@ namespace RealityToolkit.SpatialPersistence.Niantic
         /// The IDs of every anchor stored on the device.
         /// </summary>
         string[] GetStoredAnchorIds();
+
+        /// <summary>
+        /// The map in use, or null.
+        /// </summary>
+        string CurrentMapId { get; }
+
+        /// <summary>
+        /// Raised with the reason when a finished scan could not be stored as a map.
+        /// </summary>
+        event Action<string> MapStoreFailed;
+
+        /// <summary>
+        /// Scans the space into a new map without creating an anchor, for apps that drive the scan themselves.
+        /// <see cref="ISpatialPersistenceServiceModule.CancelAnchorOperation"/> finishes it and keeps what was captured;
+        /// <see cref="ISpatialPersistenceServiceModule.TryClearAnchorCache"/> drops it.
+        /// </summary>
+        /// <param name="finishWhenCovered">True to finish by itself once <see cref="Coverage"/> is complete.</param>
+        /// <returns>False when the scene has no device mapping managers, or a scan is running.</returns>
+        bool BeginScan(bool finishWhenCovered);
+
+        /// <summary>
+        /// Loads a stored map and tracks its root anchor; <see cref="IsLocalised"/> turns true once the device recognises the space.
+        /// </summary>
+        /// <returns>False when the map is not on the device or could not be loaded.</returns>
+        Task<bool> LoadMapAsync(string mapId);
+
+        /// <summary>
+        /// The IDs of every map stored on the device, with or without anchors.
+        /// </summary>
+        string[] GetStoredMapIds();
+
+        /// <summary>
+        /// Deletes a stored map and its anchors.
+        /// </summary>
+        bool DeleteStoredMap(string mapId);
+
+        /// <summary>
+        /// Where a map's data is stored.
+        /// </summary>
+        string GetMapPath(string mapId);
     }
 }
