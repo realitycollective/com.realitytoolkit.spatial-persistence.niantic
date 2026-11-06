@@ -15,7 +15,7 @@ namespace RealityToolkit.SpatialPersistence.Niantic
     /// </summary>
     /// <remarks>
     /// Ship the scene with the ARMeshManager, its NsdkMeshingExtension and any ARSceneSegmentationManager disabled.
-    /// Ethar Explorer measured both running from launch in every mode before this gate (startup review P6, October 2026).
+    /// The host app measured both running from launch in every mode before this gate (October 2026).
     /// A flow that needs them calls <see cref="Request"/> with its reason and <see cref="Release"/> when it ends; they stay on while any reason holds.
     /// The managers are looked up when the state changes, not every frame.
     /// </remarks>
