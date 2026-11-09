@@ -15,7 +15,7 @@ namespace RealityToolkit.SpatialPersistence.Niantic
     /// </summary>
     /// <remarks>
     /// An effect is only the materials set on the AR mesh chunks, so switching costs nothing. The package's neutral look is the
-    /// silhouette pair in Runtime/Visuals/Materials; apps add their own effects (Ethar Explorer adds its Ethar Spatial ones).
+    /// silhouette pair in Runtime/Visuals/Materials; apps add their own effects (the host app adds its own branded ones).
     /// The default effect is <see cref="defaultEffect"/>, or the first in the list when that is empty.
     /// The points layer draws the map's feature points as camera-facing dots with GPU instancing; give it an instancing material.
     /// </remarks>
@@ -38,7 +38,7 @@ namespace RealityToolkit.SpatialPersistence.Niantic
             public Material[] Materials;
         }
 
-        // Legacy (Ethar Explorer, 23 October 2026): public const string DefaultEffectName = "Ethar Pulse";
+        // Legacy (host app, 23 October 2026): public const string DefaultEffectName = "<the host app's default effect>";
         // The default is now the serialized defaultEffect, or the first effect in the list.
 
         private const int MaxPoints = 30000;
@@ -91,7 +91,7 @@ namespace RealityToolkit.SpatialPersistence.Niantic
                 origin = FindFirstObjectByType<XROrigin>();
             }
 
-            // Legacy (Ethar Explorer): Select(DefaultEffectName);
+            // Legacy (host app): Select(DefaultEffectName);
             if (string.IsNullOrEmpty(defaultEffect) || !Select(defaultEffect))
             {
                 current = 0;
